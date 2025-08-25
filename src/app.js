@@ -3,6 +3,7 @@ const main = require('./config/database');
 const userMiddleware = require('./middleware/userAuth');
 const User = require('./models/useModels');
 const validate = require('./utils/validate');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 4000;
@@ -30,9 +31,10 @@ app.get('/getProfile',userMiddleware,async(req,res)=>{
 app.post('/signup',async(req,res)=>{
     try {
         validate(req.body);
+        req.body.password = await bcrypt.hash(req.body.password,10);
         await User.create(req.body);
         res.status(201).send("User Created Successfully");
-    } catch (error) {
+    } catch (error) {   
         res.status(500).send('Error: '+error);
     }
 })
