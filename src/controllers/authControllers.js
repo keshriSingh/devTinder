@@ -10,9 +10,9 @@ const register = async(req,res)=>{
         const user = await User.create(req.body);
         const token = await user.getJwt();
         res.cookie('token',token,{expires: new Date(Date.now() + 3600 * 1000)});
-        res.status(201).send("User Created Successfully");
+        res.status(201).send(user);
     } catch (error) {   
-        res.status(500).send('Error: '+error);
+        res.status(500).send(''+error);
     }
 }
 
@@ -32,19 +32,19 @@ const login = async(req,res)=>{
     }
     const token = await user.getJwt();
     res.cookie('token',token,{expires: new Date(Date.now() + 3600 * 1000)});
-    res.status(200).send("User Login Succesfully");
+    res.status(200).send(user);
 
     } catch (error) {
-        res.status(400).send('Error: '+error);
+        res.status(400).send(""+error);
     }
 }
 
 const logout = async(req,res)=>{
     try {
-        res.cookie("token",null,{expires:new Date(Date.now())});
+        res.cookie("token",null,{expires: new Date(Date.now())});
         res.send("Logout Succesfully..");
     } catch (error) {
-        res.status(401).send("ERROR: "+error);
+        res.status(401).send(""+error);
     }
 }
 

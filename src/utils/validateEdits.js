@@ -1,13 +1,14 @@
 
 const validateEdits = (req)=>{
-    const isEdit = ["firstName","age","gender"];
+    const isEdit = ["firstName","photoUrl","about","age","gender"];
     const isAllowed = Object.keys(req.body).every((key)=>isEdit.includes(key));
     if(!isAllowed){
         throw new Error("Edits Fields Invalid");
     }
-    if(req.body.firstName.length<2||req.body.firstName.length>30){
-        throw new Error("FirstName should be greater than 2 and also smaller than 30");
+    if(req.body.firstName.length<=2||req.body.firstName.length>30){
+        throw new Error("name is invalid");
     }
+
      if(req.body.age<16||req.body.age>70){
         throw new Error("age should be greater than 16 and also smaller than 70");
     }

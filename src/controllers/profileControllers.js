@@ -15,7 +15,7 @@ const editProfile = async (req,res)=>{
        const user = req.result;
        Object.keys(req.body).every((key)=>user[key]=req.body[key]);
        await user.save();
-       res.status(200).send(`${user.firstName} your profile edit succesfully`);
+       res.status(200).send(user);
         
     } catch (error) {
         res.status(400).send("ERROR: "+error)

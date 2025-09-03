@@ -27,6 +27,14 @@ const userSchema = new Schema({
     gender:{
         type:String,
         enum:["male","female","other"],
+    },
+    photoUrl:{
+        type:String,
+        default:"https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png",
+    },
+    about:{
+        type:String,
+        default:"this is about section"
     }
 
 },{timestamps:true})

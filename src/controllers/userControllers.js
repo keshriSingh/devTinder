@@ -6,7 +6,7 @@ const receivedConnection = async(req,res)=>{
         const data = await Connection.find({
             toUserId:req.result._id,
             status:"interested"
-        }).populate("fromUserId","firstName");
+        }).populate("fromUserId","firstName age photoUrl about gender");
         res.status(200).json({
             msg:"All Connection",
             data
@@ -23,7 +23,7 @@ const connectedUser = async(req,res)=>{
                 {fromUserId:req.result._id,status:"accepted"},
                 {toUserId:req.result._id,status:"accepted"}
             ]
-        }).populate("fromUserId","firstName age").populate("toUserId","firstName age");
+        }).populate("fromUserId","firstName age about gender photoUrl").populate("toUserId","firstName age about gender photoUrl");
 
         if(!connectionRequest.length){
             return res.status(200).send("No Connection Exist")
@@ -50,7 +50,6 @@ const feed = async(req,res)=>{
 
         const page = parseInt(req.query.page)||1;
         let limit = parseInt(req.query.limit)||10;
-        console.log(req.query)
 
         limit = limit>20?20:limit;
         const skip = (page-1)*limit;
@@ -75,7 +74,7 @@ const feed = async(req,res)=>{
                 {_id:{$nin:Array.from(hideUserFeed)}},
                 {_id:{$ne:req.result._id}}
             ]
-        }).select("firstName age").skip(skip).limit(limit);
+        }).skip(skip).limit(limit);
         //pagination
 
         res.status(200).send(user);

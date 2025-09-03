@@ -2,9 +2,10 @@ const User = require('../models/userModels');
 const jwt = require('jsonwebtoken');
 const userMiddleware = async(req,res,next)=>{
     try {
+
        const {token} = req.cookies;
        if(!token){
-        throw new Error("You are not authenticated");
+        res.status(401).send("Invalid Token");
        }
        const payload = jwt.verify(token,process.env.SECRET_KEY);
 
