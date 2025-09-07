@@ -5,7 +5,10 @@ const userAuth = require('./routes/userAuth');
 const profileRouter = require('./routes/profileRouter');
 const connectionRouter = require('./routes/connectionRouter');
 const userRouter = require('./routes/userRouter');
-const cors = require('cors')
+const cors = require('cors');
+const http = require('http');
+const initializeSocket = require('./utils/socket.');
+const chatRouter = require('./routes/chatRouter');
 require('dotenv').config();
 
 const app = express();
@@ -23,12 +26,16 @@ app.use('/auth',userAuth);
 app.use('/user',profileRouter);
 app.use('/request',connectionRouter);
 app.use('/connection',userRouter);
+app.use('/chat',chatRouter);
 
+const server = http.createServer(app);
+
+initializeSocket(server);
 
 main()
 .then(()=>{
     console.log("DB CONNECETED");
-    app.listen(port,()=>{
+    server.listen(port,()=>{
         console.log('Server Started At '+port)
     })
 })
