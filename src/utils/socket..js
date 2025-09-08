@@ -2,19 +2,33 @@ const socket = require('socket.io');
 const User = require('../models/userModels');
 const Chat = require('../models/chatModels');
 
-const initializeSocket = (server)=>{
+const arr = new Set();
 
-const io = socket(server,{
-    cors:{
-        origin:"http://localhost:5173"
-    }
+const initializeSocket = (server)=>{
+    
+    const io = socket(server,{
+        cors:{
+            origin:"http://localhost:5173"
+        }
 })
+
 
 io.on("connection",(socket)=>{
     socket.on("joinChat",async({userId,targetUserId})=>{
         const roomId = [userId,targetUserId].sort().join("_");
         socket.join(roomId);
     }),
+
+    socket.on('online',({userId})=>{
+        arr.add(userId);
+        io.emit('isOnline',{arr:Array.from(arr)})
+    });
+
+    socket.on('offline',({userId})=>{
+        arr.delete(userId);
+        io.emit('offlineUser',{arr:Array.from(arr)});
+    })
+    
     socket.on("sendMessage",async({firstName,userId,targetUserId,chat})=>{
         const roomId = [userId,targetUserId].sort().join("_");
 
@@ -40,17 +54,16 @@ io.on("connection",(socket)=>{
             await findExistedChat.save();
 
             const user = await User.findById(userId);
-            io.to(roomId).emit("messageReceived",{firstName,userId,photoUrl:user.photoUrl,chat,time:findExistedChat.message.createdAt});
+            io.to(roomId).emit("messageReceived",{firstName,userId,photoUrl:user.photoUrl,chat});
         } catch (error) {
             console.log(error)
         }
-
     }),
     socket.on("disconnect",()=>{
-
+        
     })
-});
-
+    })
+    
 }
 
 module.exports = initializeSocket;
